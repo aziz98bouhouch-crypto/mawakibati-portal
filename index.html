@@ -1,7 +1,4 @@
-// Single source of truth for the student portal SPA.
-// Served by the teacher (main.js) over LAN and bundled as the Android student app's index.html.
-// NOTE: this whole document is one JS template literal. Inside it, do NOT use backticks or ${.
-module.exports = `<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0f766e"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="مواكبتي"><meta name="format-detection" content="telephone=no"><link rel="apple-touch-icon" href="logo.png"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" type="image/png" href="logo.png"><title>مواكبتي</title><style>
+<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0f766e"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="مواكبتي"><meta name="format-detection" content="telephone=no"><link rel="apple-touch-icon" href="logo.png"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" type="image/png" href="logo.png"><title>مواكبتي</title><style>
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{font-family:"Segoe UI",Tahoma,Arial,sans-serif;background:radial-gradient(1200px 600px at 100% -10%,#dbeafe,transparent),radial-gradient(900px 500px at -10% 20%,#ccfbf1,transparent),#eef2f7;color:#0f172a;min-height:100vh;min-height:100dvh;display:flex;justify-content:center;padding:14px 14px calc(88px + env(safe-area-inset-bottom,0px));-webkit-user-select:none;user-select:none;-webkit-text-size-adjust:100%;text-size-adjust:100%;-webkit-tap-highlight-color:transparent;overscroll-behavior-y:none}
@@ -194,7 +191,7 @@ function saveCfg(){try{localStorage.setItem(LS,JSON.stringify(CFG))}catch(e){}}
 function applyBoot(){try{var b=window.__SIJILBOOT;if(!b||typeof b!=="object")return;
   if(!(+b.t)||Date.now()-(+b.t)>432e5)return;
   var u=trimEnd(String(b.u||""));if(!u)return;
-  var bare=u.replace(/^https?:\\/\\//i,"").toLowerCase();var here=String(location.href).replace(/^https?:\\/\\//i,"").replace(/[?#].*$/,"").replace(/\\/+$/,"").toLowerCase();
+  var bare=u.replace(/^https?:\/\//i,"").toLowerCase();var here=String(location.href).replace(/^https?:\/\//i,"").replace(/[?#].*$/,"").replace(/\/+$/,"").toLowerCase();
   if(!bare||here!==bare&&here.indexOf(bare+"/")!==0)return;
   var ch=false;
   if(u.slice(0,8)==="https://"){
@@ -214,11 +211,11 @@ function sig(d){if(!d)return "";return [d.avg,d.g,(d.subs||[]).length,(d.hw||[])
 function readCache(code){try{var m=JSON.parse(localStorage.getItem(LSD)||"{}");var r=m[String(code).toLowerCase()];return r||null}catch(e){return null}}
 function writeCache(code,obj){try{var m=JSON.parse(localStorage.getItem(LSD)||"{}");m[String(code).toLowerCase()]=obj;localStorage.setItem(LSD,JSON.stringify(m))}catch(e){}}
 function sha256hex(txt){txt=String(txt==null?"":txt);if(window.crypto&&crypto.subtle&&crypto.subtle.digest){return crypto.subtle.digest("SHA-256",new TextEncoder().encode(txt)).then(function(b){var a=new Uint8Array(b),s="";for(var i=0;i<a.length;i++){s+=(a[i]<16?"0":"")+a[i].toString(16)}return s})}return Promise.resolve("")}
-function lanBase(){var b=(CFG.lan||"").trim();if(!b)return "";b=b.replace(/\\/+$/,"");return b}
+function lanBase(){var b=(CFG.lan||"").trim();if(!b)return "";b=b.replace(/\/+$/,"");return b}
 function pubBase(){return trimEnd(CFG.pub||"")}
 function lanLabel(){return lanBase().slice(0,8)==="https://"?"المستودع المركزي للأستاذ":"خادم الأستاذ على الشبكة المحلية"}
 function lanShort(){return lanBase().slice(0,8)==="https://"?"المستودع المركزي":"شبكة الأستاذ"}
-function cloudBase(){return String(CFG.su||"").replace(/\\/+$/,"").trim()}
+function cloudBase(){return String(CFG.su||"").replace(/\/+$/,"").trim()}
 function trimEnd(u){var t=String(u||"").trim();while(t.length&&t.charAt(t.length-1)==="/"){t=t.slice(0,t.length-1)}return t}
 var PRIV={"u":"","k":""};
 var MIRROR_BASE="https://aziz98bouhouch-crypto.github.io/mawakibati-portal";
@@ -232,7 +229,7 @@ function adoptPriv(m){var p=m&&m.priv;if(!p||typeof p!=="object")return false;va
   CFG.pu=u;CFG.pk=k;saveCfg();return true}
 function cloudEps(){var out=[];var pb=privBase(),pk=privKey();if(pb&&pk)out.push({u:pb,k:pk,n:"المستودع الخاص"});var sb=trimEnd(CFG.su);if(sb&&CFG.sk)out.push({u:sb,k:String(CFG.sk),n:"سحابة الأستاذ"});var mb=trimEnd(MIRROR_BASE);if(mb)out.push({u:mb,k:"",n:"النسخة الدائمة",m:1});return out}
 function cloudReady(){return cloudEps().length>0}
-function hostOf(u){try{return new URL(u).host}catch(e){var t=String(u||""),i=t.indexOf("://");if(i>=0)t=t.slice(i+3);return t.replace(/\\/+$/,"").split("/")[0]}}
+function hostOf(u){try{return new URL(u).host}catch(e){var t=String(u||""),i=t.indexOf("://");if(i>=0)t=t.slice(i+3);return t.replace(/\/+$/,"").split("/")[0]}}
 var LAN_MS=3500,CLOUD_MS=9000,MIRROR_MS=8000,DEADLAN={net:1,timeout:1,badhost:1};
 var WHY={
 offline:"لا يوجد اتصال بالإنترنت الآن — ستُعرض آخر بيانات محفوظة",
@@ -407,7 +404,7 @@ S.forget=function(){
   if(box){box.style.display="block";box.className="card";box.innerHTML="<h3>إعادة الربط</h3><div style='font-size:12px;color:#475569'>سيُحذف عنوان الشبكة ومفتاح السحابة ورمز دخولك المحفوظ من هذا الهاتف. لن تُحذف أي بيانات عند أستاذك.</div><div class='row2' style='margin-top:10px'><button onclick='S.forgetGo()'>تأكيد المسح</button><button class='secondary' onclick='S.diag()'>تراجع</button></div>"}
 };
 S.forgetGo=function(){try{localStorage.removeItem(LS);localStorage.removeItem(LSE);localStorage.removeItem(LSS)}catch(e){}CFG={mode:"auto"};saveCfg();banner("");S.logout();paintLandHint();toast("مُسِحت إعدادات الربط — امسح رمز QR الخاص بك من جديد")};
-var HELP_MSG="مشكلة في تطبيق مواكبتي (بوابة التلميذ):\\n1) اضغط زر «تحديث» في أعلى الصفحة وانتظر بضع ثوانٍ.\\n2) تأكد أن هاتفك متصل بالإنترنت.\\n3) امسح رمز QR الشخصي المطبوع في بطاقتك من زر المسح؛ فهو وحده يحمل رقم دخولك ورمزك السرّي.\\n4) إن بقيت البيانات قديمة فأبلغ أستاذك ليضغط «تحديث البيانات الآن» في برنامجه ثم ينشرها.\\nلا تحتاج إلى شبكة الأستاذ ولا إلى أي عنوان خادم — الرابط العام يكفي. ولا تشارك رقم دخولك ولا رمزك السرّي مع أي شخص.";
+var HELP_MSG="مشكلة في تطبيق مواكبتي (بوابة التلميذ):\n1) اضغط زر «تحديث» في أعلى الصفحة وانتظر بضع ثوانٍ.\n2) تأكد أن هاتفك متصل بالإنترنت.\n3) امسح رمز QR الشخصي المطبوع في بطاقتك من زر المسح؛ فهو وحده يحمل رقم دخولك ورمزك السرّي.\n4) إن بقيت البيانات قديمة فأبلغ أستاذك ليضغط «تحديث البيانات الآن» في برنامجه ثم ينشرها.\nلا تحتاج إلى شبكة الأستاذ ولا إلى أي عنوان خادم — الرابط العام يكفي. ولا تشارك رقم دخولك ولا رمزك السرّي مع أي شخص.";
 S.copyHelp=function(){
  function done(){toast("نُسخت رسالة الإصلاح — أرسلها لوليّك أو لأستاذك")}
  function manual(){try{var ta=document.createElement("textarea");ta.value=HELP_MSG;ta.setAttribute("readonly","");ta.style.cssText="position:fixed;left:8px;right:8px;top:8px;height:160px;z-index:10001;font-size:12px;padding:10px;border-radius:10px;border:1px solid #cbd5e1";document.body.appendChild(ta);ta.focus();ta.select();var ok=false;try{ok=document.execCommand("copy")}catch(e){}if(ok){ta.remove();done();return}toast("اختر النص من المربع ثم انسخه")}catch(e){toast("تعذّر النسخ — انسخ النص يدويًا")}}
@@ -594,7 +591,7 @@ S.sendMsg=function(){
   var code=(D&&D.code)||currentCode()||"—";
   var cls=(D&&D.cls)||"—";
   var parts=["رسالة من تلميذ — بوابة مواكبتي","الاسم: "+name,"رقم المسار: "+code,"القسم: "+cls,"التاريخ: "+new Date().toLocaleString("ar"),"",body];
-  var url="https://wa.me/"+w+"?text="+encodeURIComponent(parts.join("\\n"));
+  var url="https://wa.me/"+w+"?text="+encodeURIComponent(parts.join("\n"));
   try{var C=window.Capacitor;if(C&&C.Plugins&&C.Plugins.Browser&&C.Plugins.Browser.open){C.Plugins.Browser.open({url:url}).catch(function(){try{window.open(url,"_blank")}catch(e){window.location.href=url}});return}}catch(e){}
   try{var win=window.open(url,"_blank");if(!win)window.location.href=url}catch(e){window.location.href=url}
 };
@@ -622,13 +619,13 @@ S.refresh=function(){var c=currentCode()||$x("code").value.trim();if(!c){toast("
 function applyScan(raw){raw=String(raw||"").trim();if(!raw){toast("لم يُعثر على رمز صالح");return}
   var su="",sk="",inst="",code="",sec="",host="",pu="",pk="";
   try{var u=new URL(raw);host=u.protocol+"//"+u.host;var p=u.searchParams;code=p.get("c")||p.get("code")||"";sec=p.get("s")||p.get("pin")||"";su=p.get("su")||"";sk=p.get("sk")||"";inst=p.get("in")||p.get("inst")||"";pu=p.get("pu")||"";pk=p.get("pk")||"";}
-  catch(e){host=raw.replace(/\\/+$/,"");code="";sec=""}
+  catch(e){host=raw.replace(/\/+$/,"");code="";sec=""}
   var cloudHost="";if(su){try{var cu=new URL(su);cloudHost=cu.protocol+"//"+cu.host}catch(e){}}
   var pb=pubBase();
-  if(/^https:\\/\\//i.test(host)){
-    if(host!==cloudHost)CFG.lan=host.replace(/\\/+$/,"");else if(!pb)CFG.lan="";
-  }else if(/^http:\\/\\//i.test(host)&&host!==cloudHost){
-    if(!pb)CFG.lan=host.replace(/\\/+$/,"");
+  if(/^https:\/\//i.test(host)){
+    if(host!==cloudHost)CFG.lan=host.replace(/\/+$/,"");else if(!pb)CFG.lan="";
+  }else if(/^http:\/\//i.test(host)&&host!==cloudHost){
+    if(!pb)CFG.lan=host.replace(/\/+$/,"");
   }else if(cloudHost&&!pb)CFG.lan="";
   if(su)CFG.su=su;if(sk)CFG.sk=sk;if(inst)CFG.inst=inst;
   if(pu&&privUrlOk(pu))CFG.pu=trimEnd(pu);if(pk&&String(pk).length>=20)CFG.pk=String(pk);
@@ -697,4 +694,4 @@ try{(function(){var rm=window.matchMedia&&matchMedia("(prefers-reduced-motion: r
   if(String(location.pathname).indexOf("/app")!==0)return;
   navigator.serviceWorker.register("/sw.js",{scope:"/"}).catch(function(){})
 }catch(e){}})();
-</script></body></html>`;
+</script></body></html>
