@@ -373,11 +373,22 @@ function fetchPair(code,pin){
     return second.then(function(b){lanTally(a);lanTally(b);if(b.ok)return useEnd(b);return giveUp(a,b)},function(){return giveUp(a,{ok:false,which:"cloud",kind:"net"})})
   })
 }
-/* tries the typed value first, then its normalised twin — so a code the teacher wrote
-   with a space or capitals keeps working while phone-typed ٢٠٢٥/٩٩ starts matching. */
+/* المحاولات بالترتيب: كما كُتب، ثم تطبيع الأرقام، ثم حالة الأحرف الأخرى، ثم المطبَّع كاملًا.
+   أرقام دخول المتعلمين تُنشر بحروفها الكبيرة كما هي، فاللوحة على الهاتف تكتبها صغيرة
+   وتُبصم صفًّا مختلفًا؛ تجربة الشكلين تجعل الإدخال اليدوي يعمل بلا إعادة نشر ولا إعادة طباعة. */
 function variants(code,pin){
-  var out=[{c:code,p:pin}],nc=nzCode(code),np=nzPin(pin);
-  if(nc&&(nc!==String(code)||np!==String(pin)))out.push({c:nc,p:np});
+  var ps=[String(pin==null?"":pin)],np=nzPin(pin);
+  if(np&&ps.indexOf(np)<0)ps.push(np);
+  var raw=String(code==null?"":code),sf=soft(raw),cs=[raw];
+  [sf,sf.toUpperCase(),nzCode(raw)].forEach(function(v){if(v&&cs.indexOf(v)<0)cs.push(v)});
+  var out=[],seen={};
+  for(var i=0;i<cs.length&&out.length<6;i++){
+    for(var k=0;k<ps.length&&out.length<6;k++){
+      var sg=cs[i]+"|"+ps[k];
+      if(seen[sg])continue;
+      seen[sg]=1;out.push({c:cs[i],p:ps[k]})
+    }
+  }
   return out
 }
 function fetchData(code,pin){
