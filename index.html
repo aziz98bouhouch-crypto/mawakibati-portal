@@ -296,7 +296,7 @@ function nzPin(t){return soft(t).replace(/[\s\u002D\u005F\u002E\u00B7\u060C,\u20
 function cleanFields(){try{var p=$x("pin"),c=$x("code");if(p){var n=nzPin(p.value);if(n!==p.value)p.value=n}if(c){var m=soft(c.value);if(m!==c.value)c.value=m}}catch(e){}}
 function sha256hex(txt){txt=String(txt==null?"":txt);if(window.crypto&&crypto.subtle&&crypto.subtle.digest){return crypto.subtle.digest("SHA-256",new TextEncoder().encode(txt)).then(function(b){var a=new Uint8Array(b),s="";for(var i=0;i<a.length;i++){s+=(a[i]<16?"0":"")+a[i].toString(16)}return s})}return Promise.resolve("")}
 function lanBase(){var b=(CFG.lan||"").trim();if(!b)return "";b=b.replace(/\/+$/,"");var pb=trimEnd(CFG.pub||"");if(pb&&hostOf(b)===hostOf(pb))return "";return b}
-function pubBase(){return trimEnd(CFG.pub||"")}
+function pubBase(){return trimEnd(CFG.pub||"")||trimEnd(typeof MIRROR_BASE==="string"?MIRROR_BASE:"")}
 function lanLabel(){return lanBase().slice(0,8)==="https://"?"المستودع المركزي للأستاذ":"خادم الأستاذ على الشبكة المحلية"}
 function lanShort(){return lanBase().slice(0,8)==="https://"?"المستودع المركزي":"شبكة الأستاذ"}
 function cloudBase(){return String(CFG.su||"").replace(/\/+$/,"").trim()}
