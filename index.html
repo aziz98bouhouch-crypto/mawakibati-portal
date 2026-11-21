@@ -249,7 +249,8 @@ td{border-color:#999!important}
 .kpi{background:#f5f5f5!important;border-color:#999!important}
 a{color:#000!important;text-decoration:none}
 }
-</style><!--SIJIL-BOOT--></head><body><div id="splash" aria-hidden="true"><div class="sp-in"><img class="sp-logo" src="logo.png" alt="" onerror="this.style.display='none'"/><div class="sp-name">مواكبتي</div><div class="sp-tag">سجل التقييم PRO · المواكبة التربوية الذكية</div><div class="sp-bar"><i></i></div></div></div><div id="bgSym" aria-hidden="true"></div><div class="wrap">
+</style><!--SIJIL-BOOT--><meta name="robots" content="noindex,nofollow">
+</head><body><div id="splash" aria-hidden="true"><div class="sp-in"><img class="sp-logo" src="logo.png" alt="" onerror="this.style.display='none'"/><div class="sp-name">مواكبتي</div><div class="sp-tag">سجل التقييم PRO · المواكبة التربوية الذكية</div><div class="sp-bar"><i></i></div></div></div><div id="bgSym" aria-hidden="true"></div><div class="wrap">
 <div class="brand"><img class="logo" src="logo.png" alt="شعار مواكبتي" onerror="this.style.display='none'"/><div class="btext"><div class="bname">مواكبتي</div><small>سجل التقييم PRO</small></div></div>
 <div class="banner" id="banner"></div>
 <div class="card" id="auth">
@@ -1243,7 +1244,8 @@ try{(function(){var rm=window.matchMedia&&matchMedia("(prefers-reduced-motion: r
   if(window.Capacitor)return;
   if(!("serviceWorker" in navigator))return;
   if(location.protocol!=="https:")return;
-  if(String(location.pathname).indexOf("/app")!==0)return;
-  navigator.serviceWorker.register("/sw.js",{scope:"/"}).catch(function(){})
+  if(!document.querySelector("link[rel=manifest]"))return;
+  // مسارات نسبية: تعمل على /app في خادم المعلّم وعلى صفحة GitHub Pages تحت مجلد فرعي
+  navigator.serviceWorker.register("sw.js",{scope:"./"}).catch(function(){})
 }catch(e){}})();
 </script></body></html>
