@@ -1,4 +1,4 @@
-var CACHE='mawakibati-portal-v2';
+var CACHE='mawakibati-portal-v3-81d2a722';
 var SHELL=['./','index.html','logo.png','jsqr.js','manifest.webmanifest','icon-192.png','icon-512.png'];
 function key(u){var k=new URL(u);k.search='';return k.href}
 function put(req,res){if(!res||!res.ok)return res;var cp=res.clone();caches.open(CACHE).then(function(c){c.put(key(req),cp)}).catch(function(){});return res}
